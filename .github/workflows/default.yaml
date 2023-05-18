@@ -49,11 +49,24 @@ jobs:
       - name: 'Use gcloud CLI'
         run: 'gcloud info'
 
-  test-gcloud:
-    name: 'Try if gcloud works on next step'
+  validate-terraform:
+    name: 'Validate terraform'
     runs-on: ubuntu-latest
     needs: setup-gcloud
 
     steps:
-      - name: 'try gcloud'
-        run: 'gcloud info'
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.4.6
+
+      - name: Terraform validate
+        run: |
+          cd deploy
+          terraform init -backend=false
+          terraform fmt -check -recursive
+          terraform validate
+          cd ..
