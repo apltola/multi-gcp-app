@@ -6,7 +6,8 @@ on:
       - master
   workflow_dispatch: {}
 
-env: TF_VAR_project_id = ${{ secrets.GCP_PROJECT_ID }}
+env:
+  TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }}
 
 jobs:
   setup-gcloud:
