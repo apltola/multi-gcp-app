@@ -5,7 +5,7 @@ resource "google_cloud_run_service" "frontend" {
   template {
     spec {
       containers {
-        image = "gcr.io/${var.project_id}/multiapp-frontend:${var.frontend_image_tag}"
+        image = "gcr.io/${var.project_id}/${var.prefix}-frontend:${var.frontend_image_tag}"
       }
     }
   }

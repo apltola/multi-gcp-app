@@ -8,6 +8,7 @@ on:
 
 env:
   TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }}
+  PROJECT_PREFIX: 'multiapp'
 
 jobs:
   build-push-apply:
@@ -39,11 +40,11 @@ jobs:
       - name: Build Docker Images
         run: |
           echo "commit_sha ===> $COMMIT_SHA"
-          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/frontend:$COMMIT_SHA ./apps/frontend
+          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/$PROJECT_PREFIX-frontend:$COMMIT_SHA ./apps/frontend
 
       - name: Push Docker Images
         run: |
-          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/frontend:$COMMIT_SHA
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/$PROJECT_PREFIX-frontend:$COMMIT_SHA
 
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v2
