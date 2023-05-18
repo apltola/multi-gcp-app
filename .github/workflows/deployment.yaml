@@ -66,6 +66,7 @@ jobs:
         run: |
           cd deploy
           ls -la
+          export GOOGLE_APPLICATION_CREDENTIALS=./gcp-key-file.json
           echo "Automatic deployment to STAGING"
           terraform init
           terraform workspace select test
