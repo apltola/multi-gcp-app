@@ -5,6 +5,7 @@ on:
 
 env:
   TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }}
+  PROJECT_PREFIX: 'multiapp'
 
 jobs:
   pull-and-deploy:
@@ -32,7 +33,7 @@ jobs:
 
       - name: Pull Docker Images
         run: |
-          docker pull gcr.io/${{ secrets.GCP_PROJECT_ID }}/frontend:$COMMIT_SHA
+          docker pull gcr.io/${{ secrets.GCP_PROJECT_ID }}/$PROJECT_PREFIX-frontend:$COMMIT_SHA
 
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v2
