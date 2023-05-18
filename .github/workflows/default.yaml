@@ -1,0 +1,52 @@
+name: 'Build and Lint'
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build-and-test:
+    name: 'Build and Lint'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Build and Lint
+        run: |
+          cd apps/frontend
+          npm ci
+          npm run lint
+          npm run build
+          cd ../..
+
+  validate-terraform:
+    name: 'Validate terraform'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.4.6
+
+      - name: Terraform validate
+        run: |
+          cd deploy
+          terraform init -backend=false
+          terraform fmt -check -recursive
+          terraform validate
+          cd ..
