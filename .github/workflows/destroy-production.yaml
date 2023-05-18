@@ -1,4 +1,4 @@
-name: Destory Production
+name: Production Teardown
 
 on:
   workflow_dispatch: {}

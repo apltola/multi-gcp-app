@@ -1,4 +1,4 @@
-name: Destory Staging
+name: Staging Teardown
 
 on:
   workflow_dispatch: {}
