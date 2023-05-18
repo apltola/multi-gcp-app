@@ -1,0 +1,28 @@
+name: Destory Production
+
+on:
+  workflow_dispatch: {}
+
+env:
+  TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }}
+  PROJECT_PREFIX: 'multiapp'
+  GCR_REPO: gcr.io/${{ secrets.GCP_PROJECT_ID }}
+
+jobs:
+  destroy-production:
+    name: 'Destroy Production!'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Terraform Destroy
+        run: |
+          cd deploy
+          echo '${{ secrets.GCP_SA_KEY }}' > ./gcp-key-file.json
+          export GOOGLE_APPLICATION_CREDENTIALS=./gcp-key-file.json
+          terraform init
+          terraform workspace select prod
+          terraform destroy -auto-approve
+          cd ..
