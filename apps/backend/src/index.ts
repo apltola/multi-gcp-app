@@ -18,7 +18,7 @@ app.get('/', (req, res) => {
   res.send('server is alive');
 });
 
-// app.use('*', notFoundHandler);
+app.use(notFoundHandler);
 app.use(errorHandler);
 
 const port = process.env.PORT || 5555;
