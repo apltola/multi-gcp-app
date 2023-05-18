@@ -18,7 +18,9 @@ jobs:
       - id: 'auth'
         uses: 'google-github-actions/auth@v1'
         with:
+          project_id: '${{ secrets.GCP_PROJECT_ID }}'
           credentials_json: '${{ secrets.GCP_SA_KEY }}'
+          create_credentials_file: true
 
       - name: 'Set up Cloud SDK'
         uses: 'google-github-actions/setup-gcloud@v1'
@@ -35,6 +37,16 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v3
+
+      - name: Setup Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          project_id: ${{ secrets.PROJECT_ID }}
+          export_default_credentials: true
+
+      - name: Prepare Service Account Key
+        run: cp "${{ env.GOOGLE_APPLICATION_CREDENTIALS }}" ./deploy/gcp-key-file.json
 
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v2
@@ -59,6 +71,16 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v3
+
+      - name: Setup Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          project_id: ${{ secrets.PROJECT_ID }}
+          export_default_credentials: true
+
+      - name: Prepare Service Account Key
+        run: cp "${{ env.GOOGLE_APPLICATION_CREDENTIALS }}" ./deploy/gcp-key-file.json
 
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v2
