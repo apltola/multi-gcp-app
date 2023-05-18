@@ -12,3 +12,7 @@ variable "region" {
   type    = string
   default = "europe-north1"
 }
+
+variable "frontend_image_tag" {
+  default = "latest"
+}

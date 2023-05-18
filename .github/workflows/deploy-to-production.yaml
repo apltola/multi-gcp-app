@@ -7,33 +7,32 @@ env:
   TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }}
 
 jobs:
-  setup-gcloud:
-    name: 'Setup gcloud'
+  pull-and-deploy:
+    name: 'Deploy to Production'
     runs-on: ubuntu-latest
 
     steps:
       - name: Check out code
         uses: actions/checkout@v3
 
-      - id: 'auth'
+      - name: 'Authenticate gcloud'
         uses: 'google-github-actions/auth@v1'
         with:
           project_id: '${{ secrets.GCP_PROJECT_ID }}'
           credentials_json: '${{ secrets.GCP_SA_KEY }}'
           create_credentials_file: true
 
-      - name: 'Set up Cloud SDK'
+      - name: 'Set up gcloud'
         uses: 'google-github-actions/setup-gcloud@v1'
 
-  deploy-to-production:
-    name: 'Deploy to Production'
-    runs-on: ubuntu-latest
-    needs: setup-gcloud
-    if: github.event_name == 'workflow_dispatch'
+      - name: Add COMMIT_SHA env
+        run: |
+          echo "COMMIT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
+          echo "commit_sha ===> $COMMIT_SHA"
 
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v3
+      - name: Pull Docker Images
+        run: |
+          docker pull gcr.io/${{ secrets.GCP_PROJECT_ID }}/frontend:$COMMIT_SHA
 
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v2
@@ -45,6 +44,7 @@ jobs:
           cd deploy
           echo '${{ secrets.GCP_SA_KEY }}' > ./gcp-key-file.json
           export GOOGLE_APPLICATION_CREDENTIALS=./gcp-key-file.json
+          export TF_VAR_frontend_image_tag=$COMMIT_SHA
           terraform init
           terraform workspace select prod
           terraform apply -auto-approve
