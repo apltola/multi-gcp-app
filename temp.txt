@@ -12,6 +12,25 @@ on:
         default: 'test'
 
 jobs:
+  setup-gcloud:
+    name: 'Setup gcloud'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v1'
+
+      - name: 'Use gcloud CLI'
+        run: 'gcloud info'
+
   deploy:
     name: 'Deploy'
     runs-on: ubuntu-latest
@@ -28,12 +47,6 @@ jobs:
 
       - name: Check out code
         uses: actions/checkout@v3
-
-      - name: Setup Google Cloud SDK
-        uses: google-github-actions/setup-gcloud@v0.2.1
-        with:
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
-          project_id: ${{ secrets.GCP_PROJECT_ID }}
 
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v2
