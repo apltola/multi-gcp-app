@@ -1,0 +1,51 @@
+name: Deploy to Production
+
+on:
+  workflow_dispatch: {}
+
+env:
+  TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }}
+
+jobs:
+  setup-gcloud:
+    name: 'Setup gcloud'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          project_id: '${{ secrets.GCP_PROJECT_ID }}'
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+          create_credentials_file: true
+
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v1'
+
+  deploy-to-production:
+    name: 'Deploy to Production'
+    runs-on: ubuntu-latest
+    needs: setup-gcloud
+    if: github.event_name == 'workflow_dispatch'
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.4.6
+
+      - name: Terraform Init and Apply
+        run: |
+          cd deploy
+          echo '${{ secrets.GCP_SA_KEY }}' > ./gcp-key-file.json
+          export GOOGLE_APPLICATION_CREDENTIALS=./gcp-key-file.json
+          terraform init
+          terraform workspace select prod
+          terraform apply -auto-approve
+          cd ..

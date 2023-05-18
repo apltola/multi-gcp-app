@@ -1,4 +1,4 @@
-name: Deploy
+name: Deploy to Staging
 
 on:
   push:
@@ -50,30 +50,5 @@ jobs:
           export GOOGLE_APPLICATION_CREDENTIALS=./gcp-key-file.json
           terraform init
           terraform workspace select test
-          terraform apply -auto-approve
-          cd ..
-
-  deploy-to-production:
-    name: 'Deploy to Production'
-    runs-on: ubuntu-latest
-    needs: setup-gcloud
-    if: github.event_name == 'workflow_dispatch'
-
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v3
-
-      - name: Install Terraform
-        uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: 1.4.6
-
-      - name: Terraform Init and Apply
-        run: |
-          cd deploy
-          echo '${{ secrets.GCP_SA_KEY }}' > ./gcp-key-file.json
-          export GOOGLE_APPLICATION_CREDENTIALS=./gcp-key-file.json
-          terraform init
-          terraform workspace select prod
           terraform apply -auto-approve
           cd ..
