@@ -32,7 +32,7 @@ jobs:
           echo "COMMIT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
           echo "commit_sha ===> $COMMIT_SHA"
 
-      - name: Pull Docker Images
+      - name: Verify Images Exist
         run: |
           docker pull $GCR_REPO/$PROJECT_PREFIX-frontend:$COMMIT_SHA
 
@@ -51,3 +51,8 @@ jobs:
           terraform workspace select prod
           terraform apply -auto-approve
           cd ..
+
+      - name: Tag Production Images
+        run: |
+          docker tag $GCR_REPO/$PROJECT_PREFIX-frontend:$COMMIT_SHA $GCR_REPO/$PROJECT_PREFIX-frontend:prod
+          docker push $GCR_REPO/$PROJECT_PREFIX-frontend:prod
