@@ -16,7 +16,6 @@ terraform {
 }
 
 provider "google" {
-  credentials = "./gcp-key-file.json"
   project     = var.project_id
   region      = var.region
 }
