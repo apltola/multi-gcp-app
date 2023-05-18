@@ -58,9 +58,14 @@ jobs:
         with:
           terraform_version: 1.4.6
 
+      - name: Debug log
+        run: |
+          echo "google_application_credentials ===> $GOOGLE_APPLICATION_CREDENTIALS"
+
       - name: Terraform Init and Apply
         run: |
           cd deploy
+          ls -la
           echo "Automatic deployment to STAGING"
           terraform init
           terraform workspace select test
