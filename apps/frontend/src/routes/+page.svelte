@@ -1,11 +1,6 @@
 <script>
   import { PUBLIC_API_URL } from '$env/static/public';
-  try {
-    console.log('PUBLIC_API_URL', PUBLIC_API_URL);
-    console.log('import.meta.env.VITE_PUBLIC_API_URL', import.meta.env.VITE_PUBLIC_API_URL);
-  } catch (error) {
-    console.log('jjooo ei....');
-  }
+  console.log('PUBLIC_API_URL', PUBLIC_API_URL);
 </script>
 
 <h1>Welcome to SvelteKit</h1>

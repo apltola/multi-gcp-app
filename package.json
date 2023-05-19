@@ -1,0 +1,10 @@
+{
+  "name": "gcp-multi-app",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "concurrently --kill-others \"cd apps/frontend && npm run dev\" \"cd apps/backend && npm run dev\""
+  },
+  "devDependencies": {
+    "concurrently": "8.0.1"
+  }
+}
