@@ -16,3 +16,7 @@ variable "region" {
 variable "frontend_image_tag" {
   default = "latest"
 }
+
+variable "api_image_tag" {
+  default = "latest"
+}

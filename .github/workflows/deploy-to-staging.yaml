@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - master
+    paths:
+      - 'apps/frontend/**'
+      - 'apps/backend/**'
+      - 'deploy/**'
   workflow_dispatch: {}
 
 env:
@@ -47,11 +51,15 @@ jobs:
           --build-arg PUBLIC_API_URL=$PUBLIC_API_URL \
           -t $GCR_REPO/$PROJECT_PREFIX-frontend:$COMMIT_SHA ./apps/frontend
           docker tag $GCR_REPO/$PROJECT_PREFIX-frontend:$COMMIT_SHA $GCR_REPO/$PROJECT_PREFIX-frontend:latest
+          docker build -t $GCR_REPO/$PROJECT_PREFIX-api:$COMMIT_SHA ./apps/backend
+          docker tag $GCR_REPO/$PROJECT_PREFIX-api:$COMMIT_SHA $GCR_REPO/$PROJECT_PREFIX-api:latest
 
       - name: Push Docker Images
         run: |
           docker push $GCR_REPO/$PROJECT_PREFIX-frontend:$COMMIT_SHA
           docker push $GCR_REPO/$PROJECT_PREFIX-frontend:latest
+          docker push $GCR_REPO/$PROJECT_PREFIX-api:$COMMIT_SHA
+          docker push $GCR_REPO/$PROJECT_PREFIX-api:latest
 
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v2
@@ -64,6 +72,7 @@ jobs:
           echo '${{ secrets.GCP_SA_KEY }}' > ./gcp-key-file.json
           export GOOGLE_APPLICATION_CREDENTIALS=./gcp-key-file.json
           export TF_VAR_frontend_image_tag=$COMMIT_SHA
+          export TF_VAR_api_image_tag=$COMMIT_SHA
           terraform init
           terraform workspace select test
           terraform apply -auto-approve
