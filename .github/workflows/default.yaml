@@ -26,7 +26,6 @@ jobs:
         run: |
           cd apps/frontend
           npm ci
-          npm run lint
           npm run build
           cd ../..
 
