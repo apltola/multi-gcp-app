@@ -1,11 +1,11 @@
 resource "google_cloud_run_service" "frontend" {
-  name     = "${local.prefix}-frontend"
+  name     = "${var.prefix}-frontend-${local.env}"
   location = "europe-north1"
 
   template {
     spec {
       containers {
-        image = "gcr.io/${var.project_id}/${var.prefix}-frontend:${var.frontend_image_tag}"
+        image = "gcr.io/${var.project_id}/${var.prefix}-frontend-${local.env}:${var.frontend_image_tag}"
       }
     }
   }
@@ -24,13 +24,13 @@ resource "google_cloud_run_service_iam_member" "frontend" {
 }
 
 resource "google_cloud_run_service" "api" {
-  name     = "${local.prefix}-api"
+  name     = "${var.prefix}-api-${local.env}"
   location = "europe-north1"
 
   template {
     spec {
       containers {
-        image = "gcr.io/${var.project_id}/${var.prefix}-api:${var.api_image_tag}"
+        image = "gcr.io/${var.project_id}/${var.prefix}-api-${local.env}:${var.api_image_tag}"
       }
     }
   }

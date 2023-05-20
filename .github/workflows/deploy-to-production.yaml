@@ -37,7 +37,6 @@ jobs:
       - name: Add COMMIT_SHA env
         run: |
           echo "COMMIT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
-          echo "commit_sha ===> $COMMIT_SHA"
 
       - name: Verify Images Exist
         run: |

@@ -14,8 +14,8 @@ env:
   TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }}
   PROJECT_PREFIX: 'multiapp'
   GCR_REPO: gcr.io/${{ secrets.GCP_PROJECT_ID }}
-  API_URL: ci_test_value
-  PUBLIC_API_URL: ci_test_value
+  API_URL: https://multiapp-test-api-s7trfutv5a-lz.a.run.app/
+  PUBLIC_API_URL: https://multiapp-test-api-s7trfutv5a-lz.a.run.app/
 
 jobs:
   build-push-apply:
@@ -49,17 +49,17 @@ jobs:
           docker build \
           --build-arg API_URL=$API_URL \
           --build-arg PUBLIC_API_URL=$PUBLIC_API_URL \
-          -t $GCR_REPO/$PROJECT_PREFIX-frontend:$COMMIT_SHA ./apps/frontend
-          docker tag $GCR_REPO/$PROJECT_PREFIX-frontend:$COMMIT_SHA $GCR_REPO/$PROJECT_PREFIX-frontend:latest
-          docker build -t $GCR_REPO/$PROJECT_PREFIX-api:$COMMIT_SHA ./apps/backend
-          docker tag $GCR_REPO/$PROJECT_PREFIX-api:$COMMIT_SHA $GCR_REPO/$PROJECT_PREFIX-api:latest
+          -t $GCR_REPO/$PROJECT_PREFIX-frontend-test:$COMMIT_SHA ./apps/frontend
+          docker tag $GCR_REPO/$PROJECT_PREFIX-frontend-test:$COMMIT_SHA $GCR_REPO/$PROJECT_PREFIX-frontend-test:latest
+          docker build -t $GCR_REPO/$PROJECT_PREFIX-api-test:$COMMIT_SHA ./apps/backend
+          docker tag $GCR_REPO/$PROJECT_PREFIX-api-test:$COMMIT_SHA $GCR_REPO/$PROJECT_PREFIX-api-test:latest
 
       - name: Push Docker Images
         run: |
-          docker push $GCR_REPO/$PROJECT_PREFIX-frontend:$COMMIT_SHA
-          docker push $GCR_REPO/$PROJECT_PREFIX-frontend:latest
-          docker push $GCR_REPO/$PROJECT_PREFIX-api:$COMMIT_SHA
-          docker push $GCR_REPO/$PROJECT_PREFIX-api:latest
+          docker push $GCR_REPO/$PROJECT_PREFIX-frontend-test:$COMMIT_SHA
+          docker push $GCR_REPO/$PROJECT_PREFIX-frontend-test:latest
+          docker push $GCR_REPO/$PROJECT_PREFIX-api-test:$COMMIT_SHA
+          docker push $GCR_REPO/$PROJECT_PREFIX-api-test:latest
 
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v2

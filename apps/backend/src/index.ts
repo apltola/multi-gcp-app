@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import express from 'express';
 import cors from 'cors';
 import candidateRouter from './routes/candidates/router';
 import jobsRouter from './routes/jobs/router';
@@ -14,8 +14,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 
 app.use(logRequest);
-app.use('/candidates', candidateRouter);
-app.use('/jobs', jobsRouter);
+app.use('/api/candidates', candidateRouter);
+app.use('/api/jobs', jobsRouter);
 app.use('/', healthCheckRouter);
 
 app.use(notFoundHandler);

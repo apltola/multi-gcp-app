@@ -3,11 +3,6 @@ name: Production Teardown
 on:
   workflow_dispatch: {}
 
-env:
-  TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }}
-  PROJECT_PREFIX: 'multiapp'
-  GCR_REPO: gcr.io/${{ secrets.GCP_PROJECT_ID }}
-
 jobs:
   destroy-production:
     name: 'Destroy Production!'
