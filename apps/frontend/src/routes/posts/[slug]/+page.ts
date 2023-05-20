@@ -1,7 +1,7 @@
 import { error } from '@sveltejs/kit';
+import type { PageLoad } from './$types';
 
-/** @type {import('./$types').PageLoad} */
-export function load({ params }) {
+export const load = (async ({ params }) => {
   if (params.slug === 'hello-world') {
     return {
       title: 'Hello world!',
@@ -10,4 +10,4 @@ export function load({ params }) {
   }
 
   throw error(404, 'Not found');
-}
+}) satisfies PageLoad;
