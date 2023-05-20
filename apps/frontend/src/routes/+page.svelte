@@ -1,6 +1,6 @@
 <script>
   export let data;
-  console.log('🤔 client')
+  console.log('🤔 client');
 </script>
 
 <h1>joooooo</h1>
