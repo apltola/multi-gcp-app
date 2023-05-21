@@ -6,7 +6,7 @@
           <a href="/">Home</a>
         </li>
         <li>
-          <a href="/posts/hello-world">Posts</a>
+          <a href="/posts">Posts</a>
         </li>
       </ul>
     </nav>
@@ -36,6 +36,6 @@
 
   .nav-links {
     display: flex;
-    gap: 1em;
+    gap: 1.5em;
   }
 </style>

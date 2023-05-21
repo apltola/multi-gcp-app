@@ -2,6 +2,8 @@ FROM node:18-alpine
 
 ARG API_URL
 ARG PUBLIC_API_URL
+ARG CFN_ENV
+ARG CFN_CDA_TOKEN
 
 WORKDIR /app
 
@@ -11,7 +13,7 @@ RUN npm ci
 
 COPY . .
 
-RUN API_URL=${API_URL} PUBLIC_API_URL=${PUBLIC_API_URL} npm run build
+RUN API_URL=${API_URL} PUBLIC_API_URL=${PUBLIC_API_URL} CFN_ENV=${CFN_ENV} CFN_CDA_TOKEN=${CFN_CDA_TOKEN} npm run build
 
 RUN npm prune --production
 

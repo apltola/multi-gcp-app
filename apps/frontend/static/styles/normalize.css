@@ -32,6 +32,7 @@ pre {
 }
 
 a {
+  color: inherit;
   background-color: transparent;
 }
 
@@ -186,4 +187,8 @@ ul {
   list-style-type: none;
   margin: 0;
   padding-inline-start: 0;
+}
+
+p {
+  line-height: 1.4;
 }

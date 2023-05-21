@@ -14,6 +14,9 @@ env:
   TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }}
   PROJECT_PREFIX: 'multiapp'
   GCR_REPO: gcr.io/${{ secrets.GCP_PROJECT_ID }}
+  CFN_ENV: ${{ secrets.CFN_ENV }}
+  CFN_CDA_TOKEN: ${{ secrets.CFN_CDA_TOKEN }}
+  CFN_CPA_TOKEN: ${{ secrets.CFN_CPA_TOKEN }}
   API_URL: https://multiapp-api-test-s7trfutv5a-lz.a.run.app
   PUBLIC_API_URL: https://multiapp-api-test-s7trfutv5a-lz.a.run.app
 
@@ -49,6 +52,8 @@ jobs:
           docker build \
           --build-arg API_URL=$API_URL \
           --build-arg PUBLIC_API_URL=$PUBLIC_API_URL \
+          --build-arg CFN_ENV=$CFN_ENV \
+          --build-arg CFN_CDA_TOKEN=$CFN_CDA_TOKEN \
           -t $GCR_REPO/$PROJECT_PREFIX-frontend-test:$COMMIT_SHA ./apps/frontend
           docker tag $GCR_REPO/$PROJECT_PREFIX-frontend-test:$COMMIT_SHA $GCR_REPO/$PROJECT_PREFIX-frontend-test:latest
           docker build -t $GCR_REPO/$PROJECT_PREFIX-api-test:$COMMIT_SHA ./apps/backend
