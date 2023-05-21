@@ -1,0 +1,14 @@
+{
+  "name": "gcp-multi-app",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "concurrently --kill-others \"cd apps/frontend && npm run dev\" \"cd apps/backend && npm run dev\"",
+    "format": "cd apps/frontend && npm run format",
+    "lint": "cd apps/frontend && npm run lint",
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "concurrently": "8.0.1",
+    "husky": "^8.0.0"
+  }
+}

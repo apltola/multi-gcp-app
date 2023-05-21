@@ -21,5 +21,6 @@ provider "google" {
 }
 
 locals {
-  prefix = "${var.prefix}-${terraform.workspace}"
+  # prefix = "${var.prefix}-${terraform.workspace}"
+  env = terraform.workspace
 }

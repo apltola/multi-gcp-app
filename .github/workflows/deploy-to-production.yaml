@@ -1,0 +1,77 @@
+name: Deploy to Production
+
+on:
+  workflow_dispatch: {}
+
+env:
+  TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }}
+  PROJECT_PREFIX: 'multiapp'
+  GCR_REPO: gcr.io/${{ secrets.GCP_PROJECT_ID }}
+  API_URL: https://multiapp-api-prod-s7trfutv5a-lz.a.run.app
+  PUBLIC_API_URL: https://multiapp-api-prod-s7trfutv5a-lz.a.run.app
+  CFN_ENV: ${{ secrets.CFN_ENV }}
+  CFN_CDA_TOKEN: ${{ secrets.CFN_CDA_TOKEN }}
+  CFN_CPA_TOKEN: ${{ secrets.CFN_CPA_TOKEN }}
+
+jobs:
+  build-push-apply:
+    name: 'Build Image and Deploy to Production'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: 'Authenticate gcloud'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          project_id: '${{ secrets.GCP_PROJECT_ID }}'
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+          create_credentials_file: true
+
+      - name: 'Set up gcloud'
+        uses: 'google-github-actions/setup-gcloud@v1'
+
+      - name: Setup Docker
+        run: |
+          gcloud auth configure-docker
+
+      - name: Add COMMIT_SHA env
+        run: |
+          echo "COMMIT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
+
+      - name: Build Docker Images
+        run: |
+          docker build \
+          --build-arg API_URL=$API_URL \
+          --build-arg PUBLIC_API_URL=$PUBLIC_API_URL \
+          --build-arg CFN_ENV=$CFN_ENV \
+          --build-arg CFN_CDA_TOKEN=$CFN_CDA_TOKEN \
+          -t $GCR_REPO/$PROJECT_PREFIX-frontend-prod:$COMMIT_SHA ./apps/frontend
+          docker tag $GCR_REPO/$PROJECT_PREFIX-frontend-prod:$COMMIT_SHA $GCR_REPO/$PROJECT_PREFIX-frontend-prod:latest
+          docker build -t $GCR_REPO/$PROJECT_PREFIX-api-prod:$COMMIT_SHA ./apps/backend
+          docker tag $GCR_REPO/$PROJECT_PREFIX-api-prod:$COMMIT_SHA $GCR_REPO/$PROJECT_PREFIX-api-prod:latest
+
+      - name: Push Docker Images
+        run: |
+          docker push $GCR_REPO/$PROJECT_PREFIX-frontend-prod:$COMMIT_SHA
+          docker push $GCR_REPO/$PROJECT_PREFIX-frontend-prod:latest
+          docker push $GCR_REPO/$PROJECT_PREFIX-api-prod:$COMMIT_SHA
+          docker push $GCR_REPO/$PROJECT_PREFIX-api-prod:latest
+
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.4.6
+
+      - name: Terraform Init and Apply
+        run: |
+          cd deploy
+          echo '${{ secrets.GCP_SA_KEY }}' > ./gcp-key-file.json
+          export GOOGLE_APPLICATION_CREDENTIALS=./gcp-key-file.json
+          export TF_VAR_frontend_image_tag=$COMMIT_SHA
+          export TF_VAR_api_image_tag=$COMMIT_SHA
+          terraform init
+          terraform workspace select prod || terraform workspace new prod
+          terraform apply -auto-approve
+          cd ..
