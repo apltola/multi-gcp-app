@@ -1,6 +1,6 @@
 <script lang="ts">
   export let imageUrl: string;
-  export let wrapperPadding: number = 75;
+  export let wrapperPadding = 75;
 
   console.log('imageUrl', imageUrl);
 </script>
