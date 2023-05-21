@@ -27,7 +27,7 @@ jobs:
           cd apps/frontend
           npm ci
           npm run lint
-          API_URL= PUBLIC_API_URL= CFN_ENV= CFN_CDA_TOKEN= npm run build
+          API_URL= PUBLIC_API_URL= CFN_ENV=ci CFN_CDA_TOKEN=ci npm run build
           cd ../..
 
   validate-terraform:
