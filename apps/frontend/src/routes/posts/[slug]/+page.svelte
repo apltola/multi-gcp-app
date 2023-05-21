@@ -1,6 +1,6 @@
 <script>
   import { marked } from 'marked';
-  import WrappedImage from '../../../components/wrappedImage.svelte';
+  import CoverImage from '../../../components/coverImage.svelte';
 
   export let data;
 
@@ -9,7 +9,7 @@
 </script>
 
 <div class="wrapper">
-  <WrappedImage imageUrl={image.url} />
+  <CoverImage imageUrl={image.url} />
 
   <article class="post">
     {@html body}

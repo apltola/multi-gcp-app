@@ -1,8 +1,7 @@
 <script>
-  import WrappedImage from '../../components/wrappedImage.svelte';
+  import CoverImage from '../../components/coverImage.svelte';
 
   export let data;
-  console.log(data.posts);
 </script>
 
 <h1>Posts</h1>
@@ -11,7 +10,7 @@
   {#each data.posts as post}
     <li class="card">
       <a href={`/posts/${post.slug}`}>
-        <WrappedImage imageUrl={post.image.url} wrapperPadding={65} />
+        <CoverImage imageUrl={post.image.url} wrapperPadding={65} />
         <div class="text-content">
           <h2>{post.previewHeading}</h2>
           <p>{post.previewBody}</p>
@@ -41,7 +40,7 @@
   }
 
   .card {
-    border: 1px solid #000;
+    border: 1px solid goldenrod;
     transition: all 0.125s ease-in 0s;
   }
 
